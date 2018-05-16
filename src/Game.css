@@ -11,3 +11,21 @@
   background: #ccc;
   position: absolute;
 }
+
+.controls {
+  margin-top: 25px;
+}
+
+.controls input {
+  max-width: 80px;
+  text-align: center;
+}
+
+.input {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.button {
+  margin-left: 15px;
+}
