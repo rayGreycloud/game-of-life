@@ -11,7 +11,11 @@ class Game extends Component {
       <div>
         <div 
           className="Board"
-          style={{ width: WIDTH, height: HEIGHT }}
+          style={{ 
+            width: WIDTH, 
+            height: HEIGHT,
+            backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px` 
+          }}
         >
           
         </div>
