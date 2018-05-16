@@ -60,16 +60,12 @@ class Game extends Component {
   
     // Get click position 
     const elemOffset = this.getElementOffset();
-  console.log(elemOffset);
     // Convert to relative position 
     const offsetX = event.clientX - elemOffset.x;
-  
     const offsetY = event.clientY - elemOffset.y;
-  console.log(offsetX, offsetY);
     // Calculate cols/rows of clicked cell 
     const x = Math.floor(offsetX / CELL_SIZE);
     const y = Math.floor(offsetY / CELL_SIZE);
-  console.log(x,y);  
     if (x >=0 && x <= this.cols && y >= 0 && y <= this.rows) {
       this.board[y][x] = !this.board[y][x];
     }
@@ -79,10 +75,63 @@ class Game extends Component {
   
   runGame = () => {
     this.setState({ isRunning: true });
+    this.runIteration();
   }
   
   stopGame = () => {
     this.setState({ isRunning: false });
+    if (this.timeoutHandler) {
+      window.clearTimeout(this.timeoutHandler);
+      this.timeoutHandler = null;
+    }
+  }
+  
+  runIteration() {
+    let newBoard = this.makeEmptyBoard();
+    
+    // Implement game rules 
+    for (let y = 0; y < this.rows; y++) {
+      for (let x = 0; x < this.cols; x++) {
+        let neighbors = this.calculateNeighbors(this.board, x, y);
+        // If occupied 
+        if (this.board[y][x]) {
+          if (neighbors === 2 || neighbors === 3) {
+            newBoard[y][x] = true;
+          } else {
+            newBoard[y][x] = false;
+          }
+        } else {
+          if (!this.board[y[x]] && neighbors === 3) {
+            newBoard[y][x] = true;
+          }
+        }
+      }
+    }    
+    
+    this.board = newBoard;
+    this.setState({ cells: this.makeCells() });
+    
+    this.timeoutHandler = window.setTimeout(() => {
+      this.runIteration();
+    }, this.state.interval);    
+  }
+  
+  calculateNeighbors(board, x, y) {
+    let neighbors = 0;
+    // Surrounding coordinates relative to x,y
+    const dirs = [[-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1]];
+    
+    for (let i = 0; i < dirs.length; i++) {
+      const dir = dirs[i];
+      let y1 = y + dir[0];
+      let x1 = x + dir[1];
+
+      if (x1 >= 0 && x1 < this.cols && y1 >= 0 && y1 < this.rows && board[y1][x1]) {
+          neighbors++;
+      }
+    }    
+    
+    return neighbors;
   }
   
   handleIntervalChange = event => {
