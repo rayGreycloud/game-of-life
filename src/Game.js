@@ -17,7 +17,8 @@ class Game extends Component {
   state = {
     cells: [],
     interval: 100,
-    isRunning: false
+    isRunning: false,
+    generation: 1
   }
   
   makeEmptyBoard() {
@@ -113,7 +114,11 @@ class Game extends Component {
     }    
     
     this.board = newBoard;
-    this.setState({ cells: this.makeCells() });
+    let nextGeneration = this.state.generation + 1;
+    this.setState({ 
+      cells: this.makeCells(),
+      generation: nextGeneration
+    });
     
     this.timeoutHandler = window.setTimeout(() => {
       this.runIteration();
@@ -158,7 +163,10 @@ class Game extends Component {
   
   handleClear = () => {
     this.board = this.makeEmptyBoard();
-    this.setState({ cells: this.makeCells() });
+    this.setState({ 
+      cells: this.makeCells(),
+      generation: 1
+    });
   }
   
   handleRandom = () => {
@@ -172,10 +180,11 @@ class Game extends Component {
   }
   
   render() {
-    const { cells, isRunning } = this.state;
+    const { cells, isRunning, generation } = this.state;
     
     return (
       <div>
+        <h2 className="generation">Generation: {generation}</h2>
         <div 
           className="Board"
           onClick={this.handleClick.bind(this)}
