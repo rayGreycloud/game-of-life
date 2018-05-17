@@ -87,6 +87,10 @@ class Game extends Component {
   }
   
   runIteration() {
+    if (this.emptyBoard(this.board)) {
+      this.stopGame();  
+    }
+    
     let newBoard = this.makeEmptyBoard();
     
     // Implement game rules 
@@ -116,6 +120,20 @@ class Game extends Component {
     }, this.state.interval);    
   }
   
+  emptyBoard(board) {
+    let empty = true;
+    
+    for (let y = 0; y < this.rows; y++) {
+      for (let x = 0; x < this.cols; x++) {
+        if (board[y][x]) {
+          empty = false;
+        }
+      }
+    }
+    
+    return empty;
+  }
+  
   calculateNeighbors(board, x, y) {
     let neighbors = 0;
     // Surrounding coordinates relative to x,y
@@ -136,6 +154,21 @@ class Game extends Component {
   
   handleIntervalChange = event => {
     this.setState({ interval: event.target.value });
+  }
+  
+  handleClear = () => {
+    this.board = this.makeEmptyBoard();
+    this.setState({ cells: this.makeCells() });
+  }
+  
+  handleRandom = () => {
+    for (let y = 0; y < this.rows; y++) {
+      for (let x = 0; x < this.cols; x++) {
+        this.board[y][x] = (Math.random() >= 0.7);
+      }
+    }  
+    
+    this.setState({ cells: this.makeCells() });  
   }
   
   render() {
@@ -176,6 +209,14 @@ class Game extends Component {
             <button className="button"
               onClick={this.runGame}>Run</button> 
           }
+          <button 
+            className="button"
+            onClick={this.handleClear}
+            >Clear</button>
+          <button 
+            className="button"
+            onClick={this.handleRandom}
+            >Random</button>
         </div>
       </div>
     );
